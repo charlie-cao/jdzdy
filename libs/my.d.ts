@@ -1,0 +1,1 @@
+declare function share(m:number,tid:number,score:number,tname:string,top:number): void;
