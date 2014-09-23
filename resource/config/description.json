@@ -1,16 +1,16 @@
 [
     [
-        {"text" : "载着荣耀与梦想", "textColor":"0xF1C40F"},
-        {"text" : "、", "textColor":"0xFFFFFF"},
-        {"text" : "征服未来", "textColor":"0xF1C40F"}
+        {"text" : "舰队总动员", "textColor":"0xF1C40F"},
+        {"text" : "", "textColor":"0xFFFFFF"}
     ],
-    [
+        [
         {"text" : "这就是", "textColor":"0xFFFFFF"},
         {"text" : "我们", "textColor":"0xF1C40F"},
         {"text" : "的", "textColor":"0xFFFFFF"}
-    ],
-    [
-        {"text" : "舰队总动员", "textColor":"0xF1C40F"},
-        {"text" : "", "textColor":"0xFFFFFF"}
-    ]
+        ],
+        [
+        {"text" : "商海通", "textColor":"0xF1C40F"},
+        {"text" : "、", "textColor":"0xFFFFFF"},
+        {"text" : "通商海", "textColor":"0xF1C40F"}
+        ]
 ]

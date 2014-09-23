@@ -154,12 +154,10 @@ class GameApp extends egret.DisplayObjectContainer{
 
     private addIcon(){
         this.icon = this.createBitmapByName("Icon");
-        this.icon.anchorX = this.icon.anchorY = 0.5;
+//        this.icon.anchorX = this.icon.anchorY = 0.5;
         this.gameLayer.addChild(this.icon);
         this.icon.x = this.stageW / 2;
         this.icon.y = 150;
-        this.icon.scaleX = 0.55;
-        this.icon.scaleY = 0.55;
     }
 
     private addTip(){
@@ -200,7 +198,8 @@ class GameApp extends egret.DisplayObjectContainer{
 
     private addCopyRight(){
         var label:egret.TextField = new egret.TextField();
-        label.text = "© Q Game 2014";
+//        label.text = "© Q Game 2014";
+        label.text = "© 小名堂 2014";
         label.size = 12;
         label.x = (this.stageW - label.width)/2;
         label.y = this.stageH - label.height;
@@ -330,9 +329,8 @@ class GameApp extends egret.DisplayObjectContainer{
         this.btnCreateUser.y = y;
         this.btnCreateUser.addEventListener(egret.TouchEvent.TOUCH_TAP,this.clickBtnCreateUser,this);
         this.guiLayer.addElement(this.btnCreateUser);
-    }
-    private clickBtnCreateUser(event:egret.TouchEvent):void{
 
+        /*提前创建*/
         this.dlgCreateUser = new egret.gui.TitleWindow();
         this.dlgCreateUser.showCloseButton = true;
         this.dlgCreateUser.title = "输入您的名字";
@@ -351,6 +349,10 @@ class GameApp extends egret.DisplayObjectContainer{
         btn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.btnSaveUserName,this);
         this.dlgCreateUser.addElement(btn);
         this.dlgCreateUser.addEventListener(egret.gui.CloseEvent.CLOSE,this.closeSaveUserName,this);
+
+    }
+    private clickBtnCreateUser(event:egret.TouchEvent):void{
+
         egret.gui.PopUpManager.addPopUp(this.dlgCreateUser,true,true);
     }
     private btnSaveUserName(evt:egret.TouchEvent):void {
@@ -681,6 +683,10 @@ class GameApp extends egret.DisplayObjectContainer{
                 //点击我要报到交互同上，点确认之后出下面的按钮
                 //为舰队抢金币
                 this.showPlayGame(288+300);
+
+                //////console.log("Time Over");
+//                egret.gui.PopUpManager.addPopUp(this.dlgCreateUser,true,true);
+
             } else {
                 //这种情况初始化出来的页面有三个按钮从上往下依次是
                 //为舰队抢金币
@@ -934,7 +940,7 @@ class GameApp extends egret.DisplayObjectContainer{
                 var sourceArr:any[] = [];
                 for (var i:number = 0; i < data.length; i++)
                 {
-                    sourceArr.push({name:"第"+(i+1)+"名     "+data[i].name+"拥有"+data[i].score+"金币"});
+                    sourceArr.push({name:(i+1)+"."+data[i].name+"拥有"+data[i].score+"金币"});
                 }
                 //用ArrayCollection包装
                 var myCollection:egret.gui.ArrayCollection = new egret.gui.ArrayCollection(sourceArr);
