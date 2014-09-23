@@ -80,8 +80,10 @@ class GameApp extends egret.DisplayObjectContainer{
         }
     }
     public static Game:GameApp;
+    public static pageUrl = "http://i.shanghaitong.biz/invite/478";
 
-    private textContainer:egret.Sprite;
+
+    private textContainer;
 
     private btnRestart;
     private btnTeamList;
@@ -127,6 +129,8 @@ class GameApp extends egret.DisplayObjectContainer{
 
     private tip:egret.TextField;
 
+    private headtitle;
+
 //    private getQueryString(name) {
 //        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
 //        var r = window.location.search.substr(1).match(reg);
@@ -154,41 +158,95 @@ class GameApp extends egret.DisplayObjectContainer{
 
     private addIcon(){
         this.icon = this.createBitmapByName("Icon");
-//        this.icon.anchorX = this.icon.anchorY = 0.5;
+        this.icon.anchorX = this.icon.anchorY = 0.5;
         this.gameLayer.addChild(this.icon);
         this.icon.x = this.stageW / 2;
-        this.icon.y = 150;
+        this.icon.y = 120;
+//        this.icon.touchEnabled = true;
+//        this.icon.addEventListener(egret.TouchEvent.TOUCH_TAP,this.gotoPage,this);
+
     }
 
     private addTip(){
+        /*
+        this.textContainer = new egret.Sprite();
+
+        this.textContainer.anchorX = this.textContainer.anchorY = 0.5;
+        this.textContainer.text = 40;
+
+        var lineArr =
+                [
+                    {"text" : "商海通", "textColor":"0xFFFFFF"},
+                    {"text" : " ", "textColor":"0xF1C40F"},
+                    {"text" : "通商海", "textColor":"0xF1C40F"}
+                ]
+            ;
+        var w:number = 0;
+        for (var i:number = 0; i < lineArr.length; i++) {
+            var info:any = lineArr[i];
+            var colorLabel:egret.TextField = new egret.TextField();
+            colorLabel.x = w;
+            colorLabel.anchorX = colorLabel.anchorY = 0;
+            colorLabel.textColor = parseInt(info["textColor"]);
+            colorLabel.text = info["text"];
+            colorLabel.size = 40;
+            this.textContainer.addChild(colorLabel);
+
+            w += colorLabel.width;
+        }
+        this.textContainer.x = this.stageW / 2;
+        this.textContainer.y = 220;
+        this.textContainer.touchEnabled = true;
+        this.textContainer.addEventListener(egret.TouchEvent.TOUCH_TAP,this.gotoPage,this);
+
+        this.gameLayer.addChild(this.textContainer);
+        */
         var textContainer:egret.Sprite = new egret.Sprite();
         textContainer.anchorX = textContainer.anchorY = 0.5;
         this.gameLayer.addChild(textContainer);
         textContainer.x = this.stageW / 2;
-        textContainer.y = 280;
+        textContainer.y = 220;
         textContainer.alpha = 0;
         this.textContainer = textContainer;
         //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
         RES.getResAsync("description",this.startAnimation,this)
+
+
+        //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
+//        RES.getResAsync("description",this.startAnimation,this)
+//        */
+    }
+
+    private gotoPage(event:egret.TouchEvent):void {
+        var urlreq:egret.URLRequest = new egret.URLRequest();
+        urlreq.url = "./launcher/api.php?a=sys_log&tname="+this.tnametext+"&tid="+this.tid+"&uname="+this.unametext+"&uid="+this.uid;
+        this.urlloader.load( urlreq );
+        this.urlloader.addEventListener(egret.Event.COMPLETE, this.onSysLog, this);
+        console.log("--- start ---");
+        window.open (GameApp.pageUrl,"_blank");
+        console.log("--- end ---");
+    }
+    private onSysLog(){
+     //   window.open (GameApp.pageUrl,"_blank");
     }
 
     private addTeamName(){
         this.tnameT = new egret.TextField();
-        this.tnameT.width = this.stageW/2;
+        this.tnameT.width = this.stageW/2-10;
         this.tnameT.x = 0;
-        this.tnameT.y = 340;
+        this.tnameT.y = 260;
         this.tnameT.textColor = 0xffffff;
-        this.tnameT.textAlign = "center";
+        this.tnameT.textAlign = "right";
         this.tnameT.text = "-舰队-";
         this.tnameT.size = 20;
         this.gameLayer.addChild(this.tnameT);
 
         this.unameT = new egret.TextField();
-        this.unameT.width = this.stageW/2;
-        this.unameT.x = this.stageW/2;
-        this.unameT.y = 340;
+        this.unameT.width = this.stageW/2-10;
+        this.unameT.x = this.stageW/2+10;
+        this.unameT.y = 260;
         this.unameT.textColor = 0xffffff;
-        this.unameT.textAlign = "center";
+        this.unameT.textAlign = "left";
         this.unameT.text = "-舰员-";
         this.unameT.size = 20;
         this.gameLayer.addChild(this.unameT);
@@ -199,11 +257,15 @@ class GameApp extends egret.DisplayObjectContainer{
     private addCopyRight(){
         var label:egret.TextField = new egret.TextField();
 //        label.text = "© Q Game 2014";
-        label.text = "© 小名堂 2014";
+        label.text = "商海通：商业是最大的公益";
         label.size = 12;
         label.x = (this.stageW - label.width)/2;
         label.y = this.stageH - label.height;
+        label.touchEnabled = true;
+        label.addEventListener(egret.TouchEvent.TOUCH_TAP,this.gotoPage,this);
+
         this.gameLayer.addChild( label );
+
     }
 
     /**
@@ -226,7 +288,8 @@ class GameApp extends egret.DisplayObjectContainer{
         var uid = this.getCookie("uid");
 
         if(uid==null){
-            alert("请先报到");
+            /*这里可能有问题，但是转发出去的应该没问题*/
+            alert("请先填写名字");
             return;
         };
 
@@ -255,7 +318,7 @@ class GameApp extends egret.DisplayObjectContainer{
     private btnSaveTeamName(evt:egret.TouchEvent):void {
         var uid = this.getCookie("uid");
         if(uid==null){
-            alert("请先报到");
+            alert("请先加入舰队");
             return;
         };
         if(this.tnameInput.text.length>8){
@@ -291,8 +354,14 @@ class GameApp extends egret.DisplayObjectContainer{
     }
     private onCreateTeamComplete(event:egret.Event):void
     {
+
         this.urlloader.removeEventListener(egret.Event.COMPLETE, this.onCreateTeamComplete, this);
         try{
+
+//            alert("aaaaa");
+//            if(this.teaminfo.total_user>=15){
+//                this.showPlayGame(288+20);
+//            }
             console.log("onCreateTeamComplete");
             console.log( this.urlloader.data );
             eval("var data = "+this.urlloader.data);
@@ -302,10 +371,12 @@ class GameApp extends egret.DisplayObjectContainer{
                 this.tid = eval("data.data.tid");
                 this.setCookie("tid",this.tid);
                 //创建舰队后的更新分享到新舰队。
-                this.teaminfo.score=0;
+                this.teaminfo={score:'0',total_user:'1',play_time:'0',uid:this.uid};
                 share(0,this.tid,0,this.tnametext,0);
-
                 egret.gui.PopUpManager.removePopUp(this.digCreateTeam);
+                egret.gui.Alert.show(this.tnametext+"创建成功\r\n马上点击右上角分享按钮\r\n召集小伙伴，成为海贼王","无伙伴，不舰队");
+            }else if(eval("data.msg")=="fail"){
+                alert("舰队已经存在了请换个名字");
             }else{
                 alert("数据错误");
             }
@@ -324,13 +395,12 @@ class GameApp extends egret.DisplayObjectContainer{
     private unametext;
     private showCreateUser(y){
         this.btnCreateUser = new egret.gui.Button();
-        this.btnCreateUser.label = "我要报到";
+        this.btnCreateUser.label = "加入舰队";
         this.btnCreateUser.horizontalCenter = 0;
         this.btnCreateUser.y = y;
         this.btnCreateUser.addEventListener(egret.TouchEvent.TOUCH_TAP,this.clickBtnCreateUser,this);
         this.guiLayer.addElement(this.btnCreateUser);
 
-        /*提前创建*/
         this.dlgCreateUser = new egret.gui.TitleWindow();
         this.dlgCreateUser.showCloseButton = true;
         this.dlgCreateUser.title = "输入您的名字";
@@ -349,9 +419,9 @@ class GameApp extends egret.DisplayObjectContainer{
         btn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.btnSaveUserName,this);
         this.dlgCreateUser.addElement(btn);
         this.dlgCreateUser.addEventListener(egret.gui.CloseEvent.CLOSE,this.closeSaveUserName,this);
-
     }
     private clickBtnCreateUser(event:egret.TouchEvent):void{
+
 
         egret.gui.PopUpManager.addPopUp(this.dlgCreateUser,true,true);
     }
@@ -383,9 +453,9 @@ class GameApp extends egret.DisplayObjectContainer{
                 this.urlloader.load( urlreq );
                 this.urlloader.addEventListener(egret.Event.COMPLETE, this.onCreateUserComplete, this);
 
-                //切换按钮 隐藏我要报到 显示修改大名
+                //切换按钮 隐藏加入舰队 显示修改大名
                 this.guiLayer.removeElement(this.btnCreateUser);
-                this.showChangeUserName(288+200);
+                this.showChangeUserName(288+120);
             }catch(e){
                 console.log(e);
             }
@@ -558,7 +628,7 @@ class GameApp extends egret.DisplayObjectContainer{
                 this.teaminfo = eval("tdata.data");
                 this.tnametext = eval("tdata.data.name");
                 this.tnameT.text = "舰队:"+this.tnametext;
-                share(1,this.tid,this.teaminfo.score,this.tnametext,0);
+                share(0,this.tid,this.teaminfo.score,this.tnametext,0);
 
                 console.log(this.tnametext);
                 console.log(this.tnameT.text);
@@ -630,11 +700,14 @@ class GameApp extends egret.DisplayObjectContainer{
             this.setCookie("tid",this.tid);
         }else{
             //如果没有tid 清除链接
+//            document.cookie = "tid=;expires=Sun, 04 Dec 2002 08:06:45 GMT";
+//            document.cookie = "uid=;expires=Sun, 04 Dec 2002 08:06:45 GMT";
+//            document.cookie = "tname=;expires=Sun, 04 Dec 2002 08:06:45 GMT";
+//            document.cookie = "uname=;expires=Sun, 04 Dec 2002 08:06:45 GMT";
+//            this.uid = null;
+            //如果没有tid 清除链接
             document.cookie = "tid=;expires=Sun, 04 Dec 2002 08:06:45 GMT";
-            document.cookie = "uid=;expires=Sun, 04 Dec 2002 08:06:45 GMT";
             document.cookie = "tname=;expires=Sun, 04 Dec 2002 08:06:45 GMT";
-            document.cookie = "uname=;expires=Sun, 04 Dec 2002 08:06:45 GMT";
-            this.uid = null;
         }
 
         if(this.uid!=null){
@@ -676,25 +749,24 @@ class GameApp extends egret.DisplayObjectContainer{
         if ( !this.tid ) {//无舰队
             if ( !this.uid ) {
                 //创建自己的舰队
-                this.showCreateTeam(288+100);
+                this.showCreateTeam(288+20);
                 //点击创建自己的舰队弹层，填写舰队名字，点击确定之后出下面的按钮
-                //我要报到
-                this.showCreateUser(288+200);
-                //点击我要报到交互同上，点确认之后出下面的按钮
+                //加入舰队
+                this.showCreateUser(288+120);
+                //点击加入舰队交互同上，点确认之后出下面的按钮
                 //为舰队抢金币
-                this.showPlayGame(288+300);
-
-                //////console.log("Time Over");
-//                egret.gui.PopUpManager.addPopUp(this.dlgCreateUser,true,true);
+                this.showPlayGame(288+220);
+                this.dlgCreateUser.showCloseButton = false;
+                egret.gui.PopUpManager.addPopUp(this.dlgCreateUser,true,true);
 
             } else {
                 //这种情况初始化出来的页面有三个按钮从上往下依次是
                 //为舰队抢金币
-                this.showPlayGame(288+100);
+                this.showPlayGame(288+20);
                 //修改大名
-                this.showChangeUserName(288+200);
+                this.showChangeUserName(288+120);
                 //创建自己的舰队
-                this.showCreateTeam(288+300);
+                this.showCreateTeam(288+220);
             }
         }else {//舰队标示，说明他点击了某个舰长或者队员分享的舰队的链接
             //已经获取舰队总人数了 再增加一个当前用户是否在其中
@@ -723,8 +795,11 @@ class GameApp extends egret.DisplayObjectContainer{
 
             } else {//用户没有身份
                 this.tnameT.text = "舰队:"+this.tnametext;
-                this.showCreateUser(288+200);
-                //点击我要报到之后,判断当前舰队成员是否已满，如果未满
+                this.showCreateUser(288+120);
+                this.btnCreateUser.label = "填写名字";
+                //点击加入舰队之后,判断当前舰队成员是否已满，如果未满
+//                this.dlgCreateUser.showCloseButton = false;
+//                egret.gui.PopUpManager.addPopUp(this.dlgCreateUser,true,true);
 
                 //请求不含有uid的检查链接，返回的是team的成员数
                 var urlreq:egret.URLRequest = new egret.URLRequest();
@@ -747,11 +822,11 @@ class GameApp extends egret.DisplayObjectContainer{
                 var data = eval("data.data");
                  if ( data.inteam ==1 ) {
                      //为舰队抢金币
-                     this.showPlayGame(288+100);
+                     this.showPlayGame(288+20);
                      //修改大名
-                     this.showChangeUserName(288+200);
+                     this.showChangeUserName(288+120);
                      //创建自己的舰队
-                     this.showCreateTeam(288+300);
+                     this.showCreateTeam(288+220);
                      //这个时候用户可以直接玩游戏
                      //可以选择修改名字或者重新自己创建一个舰队
                      //如果用户选择创建了自己的舰队，那么进去玩游戏的成果归属于他新创建的舰队
@@ -759,16 +834,17 @@ class GameApp extends egret.DisplayObjectContainer{
                      if ( data.total_user >=15 ) {
                          alert("该舰队成员已满请创建您的舰队");
                          //修改大名
-                         this.showChangeUserName(288+100);
+                         this.showChangeUserName(288+20);
                          //创建自己的舰队
-                         this.showCreateTeam(288+200);
+                         this.showCreateTeam(288+120);
+
                      } else {
                          //为舰队抢金币
-                         this.showPlayGame(288+100);
+                         this.showCreateTeam(288+20);
                          //修改大名
-                         this.showChangeUserName(288+200);
+                         this.showChangeUserName(288+120);
                          //创建自己的舰队
-                         this.showCreateTeam(288+300);
+                         this.showPlayGame(288+220);
                      }
                  }
             }else{
@@ -790,13 +866,13 @@ class GameApp extends egret.DisplayObjectContainer{
                 var data = eval("data.data");
                 if ( data.total_user <15 ) {
                     //为舰队抢金币
-                    this.showPlayGame(288+300);
+                    this.showPlayGame(288+220);
                     //创建自己的舰队
-                    this.showCreateTeam(288+100);
+                    this.showCreateTeam(288+20);
                 } else {
                     alert("该舰队成员已满请创建您的舰队")
                     //创建自己的舰队
-                    this.showCreateTeam(288+100);
+                    this.showCreateTeam(288+20);
                 }
             }else{
                 alert("数据错误");
@@ -808,11 +884,11 @@ class GameApp extends egret.DisplayObjectContainer{
 
     private gameStart():void{
         if(this.uid==null){
-            alert("请先报到");
+            alert("请先加入舰队");
             return ;
         }
         if(this.tid==null){
-            alert("请先创造舰队");
+            alert("请先创建舰队");
             return ;
         }
 
@@ -826,11 +902,14 @@ class GameApp extends egret.DisplayObjectContainer{
 
     }
 
+    private resSheep;
+    private sheepText;
     private gameInit():void{
 
         try{
             this.gameLayer.removeChild(this.resLL);
         }catch(e){}
+
         try{
             this.gameLayer.removeChild(this.mouth);
         }catch(e){}
@@ -840,6 +919,7 @@ class GameApp extends egret.DisplayObjectContainer{
         try{
             this.gameLayer.removeChild(this.nowTimeTextField);
         }catch(e){}
+
         try{
             this.gameLayer.removeChild(this.resTimeCount);
         }catch(e){}
@@ -847,12 +927,24 @@ class GameApp extends egret.DisplayObjectContainer{
             this.gameLayer.removeChild(this.resBookCount);
         }catch(e){}
         try{
+            this.gameLayer.removeChild(this.overtitlemaske);
+        }catch(e){}
+
+        try{
             this.gameLayer.removeChild(this.gameOverTitle);
         }catch(e){}
-        try{
+
             for(var i:number=0;i<this.books.length;i++){
+                try{
+                    this.books[i].y=1000;
+                }catch (e){}
+                try{
                 this.gameLayer.removeChild(this.books[i]);
+                }catch(e){}
             }
+
+        try{
+            this.gameLayer.removeChild(this.headtitle);
         }catch(e){}
 
         this.resLL = this.createBitmapByName("resLL");
@@ -873,14 +965,39 @@ class GameApp extends egret.DisplayObjectContainer{
 //        this.mouth.graphics.endFill();
         this.gameLayer.addChild(this.mouth);
 
+//        this.resTimeCount.x = 20;
+//        this.resTimeCount.y = 20;
+//        this.gameLayer.addChild(this.resTimeCount);
+//        this.resBookCount.x = this.stage.stageWidth - this.resBookCount.width - 20;
+//        this.resBookCount.y = 20;
+//        this.gameLayer.addChild(this.resBookCount);
         this.resTimeCount = this.createBitmapByName("resTimeCount");
-        this.resTimeCount.x = 20;
-        this.resTimeCount.y = 20;
-        this.gameLayer.addChild(this.resTimeCount);
         this.resBookCount = this.createBitmapByName("resBookCount");
-        this.resBookCount.x = this.stage.stageWidth - this.resBookCount.width - 20;
-        this.resBookCount.y = 20;
-        this.gameLayer.addChild(this.resBookCount);
+//        this.resSheep = this.createBitmapByName("resSheep");
+
+
+        this.headtitle =  new egret.Sprite();
+        this.headtitle.width = this.stageW;
+        this.headtitle.height = 50;
+        this.headtitle.graphics.beginFill( 0xffffff, 0.4);
+        this.headtitle.graphics.drawRect( 0, 0, this.stageW, 50 );
+        this.headtitle.graphics.endFill();
+
+
+//        this.headtitle.addChild(this.resSheep);
+//        this.resSheep.x = 4;
+//        this.resSheep.y = 2;
+
+        this.headtitle.addChild(this.resTimeCount);
+        this.resTimeCount.x = 4;
+        this.resTimeCount.y = 2;
+
+        this.headtitle.addChild(this.resBookCount);
+        this.resBookCount.x = this.stageW/2+4;
+        this.resBookCount.y = 2;
+
+
+        this.gameLayer.addChild( this.headtitle );
 
         this.touchEnabled = true;
         this.addEventListener(egret.TouchEvent.TOUCH_MOVE,this.touchHandler,this);
@@ -891,27 +1008,38 @@ class GameApp extends egret.DisplayObjectContainer{
         //初始化时间 和 吃掉的书的计数
         this.gameTime.addEventListener(egret.TimerEvent.TIMER,this.fGameTime,this);
         this.gameTime.start();
+
+//        var sheep:egret.TextField = new egret.TextField();
+//        sheep.x = 4+45;
+//        sheep.y = 12;
+//        sheep.textColor = 0x7C0000;
+//        sheep.textAlign = "center";
+//        sheep.text = this.tnametext;
+//        sheep.size = 28;
+//        this.sheepText = sheep;
+//        this.headtitle.addChild(sheep);
+
         var nowTime:egret.TextField = new egret.TextField();
-        nowTime.x = 130;
-        nowTime.y = 38;
-        nowTime.textColor = 0x8C0000;
+        nowTime.x = 4+45+4;
+        nowTime.y = 7;
+        nowTime.textColor = 0x7C0000;
         nowTime.textAlign = "center";
         nowTime.text = "0";
-        nowTime.size = 50;
+        nowTime.size = 35;
         this.nowTimeTextField = nowTime;
-        this.gameLayer.addChild(nowTime);
+        this.headtitle.addChild(nowTime);
         this.nowTime = 0;
 
 
         var bookCount:egret.TextField = new egret.TextField();
-        bookCount.x = this.stage.stageWidth - bookCount.width - 20 -80;
-        bookCount.y = 38;
-        bookCount.textColor = 0x8C0000;
+        bookCount.x = this.stageW/2+4+45+4;
+        bookCount.y = 7;
+        bookCount.textColor = 0x7C0000;
         bookCount.textAlign = "center";
         bookCount.text = "0";
-        bookCount.size = 50;
+        bookCount.size = 35;
         this.bookCountTextField = bookCount;
-        this.gameLayer.addChild(bookCount);
+        this.headtitle.addChild(bookCount);
         this.bookCount = 0;
 
 
@@ -940,7 +1068,7 @@ class GameApp extends egret.DisplayObjectContainer{
                 var sourceArr:any[] = [];
                 for (var i:number = 0; i < data.length; i++)
                 {
-                    sourceArr.push({name:(i+1)+"."+data[i].name+"拥有"+data[i].score+"金币"});
+                    sourceArr.push({name:(i+1)+". "+data[i].name+" "+data[i].score+"金币 ("+data[i].total_user+"/15)"});
                 }
                 //用ArrayCollection包装
                 var myCollection:egret.gui.ArrayCollection = new egret.gui.ArrayCollection(sourceArr);
@@ -965,10 +1093,12 @@ class GameApp extends egret.DisplayObjectContainer{
     private onBtnTeamTop(){
         //获取舰队信息
         var urlreq:egret.URLRequest = new egret.URLRequest();
-        urlreq.url = "./launcher/api.php?a=teamTop";
+        urlreq.url = "./launcher/api.php?a=teamTop&tid="+this.tid;
         this.urlloader.load( urlreq );
         this.urlloader.addEventListener(egret.Event.COMPLETE, this.onTeamTopComplete, this);
     }
+
+
     private dlgTeamList;
     private teamListLabelFunction(item:any):string {
         return item.name;
@@ -985,14 +1115,20 @@ class GameApp extends egret.DisplayObjectContainer{
                 console.log(data);
                 this.dlgTeamList = new egret.gui.TitleWindow();
                 this.dlgTeamList.showCloseButton = true;
-                this.dlgTeamList.title = this.tnametext+"舰队成员";
+                console.log("--------ddddd");
+                console.log(data.length);
+                this.dlgTeamList.title = this.tnametext+"成员("+(data.length)+"/15)";
                 this.dlgTeamList.width = 400;
                 this.dlgTeamList.height = 600;
                 //先创建一个数组
                 var sourceArr:any[] = [];
-                for (var i:number = 0; i < data.length; i++)
+                for (var i:number = 0; i < 15 ; i++)
                 {
-                    sourceArr.push({name:"第"+(i+1)+"名     "+data[i].name+"拥有"+data[i].score+"金币"});
+                    if(i<data.length){
+                        sourceArr.push({name:(i+1)+". "+data[i].name+" "+data[i].score+"金币"});
+                    }else{
+                        sourceArr.push({name:(i+1)+". ----还没有舰员---- "});
+                    }
                 }
                 //用ArrayCollection包装
                 var myCollection:egret.gui.ArrayCollection = new egret.gui.ArrayCollection(sourceArr);
@@ -1023,6 +1159,63 @@ class GameApp extends egret.DisplayObjectContainer{
     }
 
 
+
+    private dlgUserTop;
+    private UserTopLabelFunction(item:any):string {
+        return item.name;
+    }
+    private onUserTopComplete(){
+        this.urlloader.removeEventListener(egret.Event.COMPLETE, this.onUserTopComplete, this);
+        try{
+            console.log("onUserTopComplete");
+            console.log( this.urlloader.data );
+
+            eval("var tdata = "+this.urlloader.data);
+            if(eval("tdata.msg")=="success"){
+                var data = eval("tdata.data");
+                console.log(data);
+                this.dlgUserTop = new egret.gui.TitleWindow();
+                this.dlgUserTop.showCloseButton = true;
+                console.log(data.length);
+                this.dlgUserTop.title = "十大高手(单次得分)";
+                this.dlgUserTop.width = 400;
+                this.dlgUserTop.height = 600;
+                //先创建一个数组
+                var sourceArr:any[] = [];
+                for (var i:number = 0; i < data.length ; i++)
+                {
+                        sourceArr.push({name:(i+1)+". "+data[i].name+" "+data[i].score+"金币"});
+                }
+                //用ArrayCollection包装
+                var myCollection:egret.gui.ArrayCollection = new egret.gui.ArrayCollection(sourceArr);
+                var dataList:egret.gui.List = new egret.gui.List();
+                dataList.dataProvider = myCollection;
+                dataList.labelFunction = this.UserTopLabelFunction;
+                dataList.percentWidth = 100;
+                dataList.percentHeight = 100;
+                this.dlgUserTop.addElement(dataList);
+                this.dlgUserTop.addEventListener(egret.gui.CloseEvent.CLOSE,this.closeDlgUserTop,this);
+                egret.gui.PopUpManager.addPopUp(this.dlgUserTop,true,true);
+            }else{
+                alert("数据错误");
+            }
+        }catch(e){
+            console.log(e);
+        }
+    }
+    private closeDlgUserTop(evt:egret.gui.CloseEvent):void {
+        egret.gui.PopUpManager.removePopUp(this.dlgUserTop);
+    }
+    private onBtnUserTop(){
+        //获取舰队信息
+        var urlreq:egret.URLRequest = new egret.URLRequest();
+        urlreq.url = "./launcher/api.php?a=userTop";
+        this.urlloader.load( urlreq );
+        this.urlloader.addEventListener(egret.Event.COMPLETE, this.onUserTopComplete, this);
+    }
+
+
+    private overtitlemaske;
     private gameOver(type:number):void{
 
             for(var book in this.books){
@@ -1052,7 +1245,7 @@ class GameApp extends egret.DisplayObjectContainer{
         this.btnRestart = new egret.gui.Button();
         this.btnRestart.label = "挑战更多金币";
         this.btnRestart.horizontalCenter = 0;
-        this.btnRestart.y = 250;
+        this.btnRestart.y = 200;
         this.btnRestart.width=200;
 
         this.btnRestart.addEventListener(egret.TouchEvent.TOUCH_TAP,function(){
@@ -1063,9 +1256,9 @@ class GameApp extends egret.DisplayObjectContainer{
 
 
         this.btnShare = new egret.gui.Button();
-        this.btnShare.label = "邀请更多的船员";
+        this.btnShare.label = "邀请更多的舰员";
         this.btnShare.horizontalCenter = 0;
-        this.btnShare.y = 350;
+        this.btnShare.y = 200+80;
         this.btnShare.width=200;
         this.btnShare.addEventListener(egret.TouchEvent.TOUCH_TAP,function(){
             that.topMask = new egret.Shape();
@@ -1086,7 +1279,7 @@ class GameApp extends egret.DisplayObjectContainer{
             that.tip.y = 20;
             that.tip.size = 26;
             that.tip.textColor = 0xffffff;
-            that.tip.text = "转发给朋友或者朋友圈\r\n邀请你的好友成为你的船员\r\n为舰队赚更多的金币";
+            that.tip.text = "转发给朋友或者朋友圈 ↑ \r\n召集满15名舰员\r\n为舰队赚取更多启动资金";
             that.tip.x = that.stage.width - that.tip.width -20;
 
             that.addChild(that.tip);
@@ -1097,7 +1290,7 @@ class GameApp extends egret.DisplayObjectContainer{
         this.btnTeamList = new egret.gui.Button();
         this.btnTeamList.label = "查看我的舰队";
         this.btnTeamList.horizontalCenter = 0;
-        this.btnTeamList.y = 450;
+        this.btnTeamList.y = 200+80*2;
         this.btnTeamList.width=200;
         this.btnTeamList.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onBtnTeamList,this);
         this.guiLayer.addElement(this.btnTeamList);
@@ -1105,11 +1298,20 @@ class GameApp extends egret.DisplayObjectContainer{
         this.btnTeamTop = new egret.gui.Button();
         this.btnTeamTop.label = "舰队总排行";
         this.btnTeamTop.horizontalCenter = 0;
-        this.btnTeamTop.y = 550;
+        this.btnTeamTop.y = 200+80*3;
         this.btnTeamTop.width=200;
         this.btnTeamTop.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onBtnTeamTop,this);
         this.guiLayer.addElement(this.btnTeamTop);
 
+        this.btnTeamTop = new egret.gui.Button();
+        this.btnTeamTop.label = "十大高手";
+        this.btnTeamTop.label.textColor = 0xCD0000;
+
+        this.btnTeamTop.horizontalCenter = 0;
+        this.btnTeamTop.y = 200+80*4;
+        this.btnTeamTop.width=200;
+        this.btnTeamTop.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onBtnUserTop,this);
+        this.guiLayer.addElement(this.btnTeamTop);
 
 
         this.toplist = new egret.TextField();
@@ -1121,41 +1323,28 @@ class GameApp extends egret.DisplayObjectContainer{
         this.gameLayer.addChild(this.toplist);
 
 
+        this.overtitlemaske =  new egret.Sprite();
+        this.gameLayer.addChild(this.overtitlemaske);
+
         this.gameOverTitle = new egret.TextField();
-        this.gameOverTitle.y = 150;
-        this.gameOverTitle.size = 36;
-        this.gameOverTitle.textColor = 0xffffff;
-        this.gameOverTitle.strokeColor = 0xD90000;
+        this.gameOverTitle.y = 90;
+        this.gameOverTitle.size = 30;
+        this.gameOverTitle.textColor = 0xFFFFFF;
+        this.gameOverTitle.strokeColor = 0xC70000;
         this.gameOverTitle.stroke = 2;
-        var title:string;
+        this.gameOverTitle.text = "本轮你坚持了"+this.nowTime+"秒 \r\n为 "+this.tnametext+" 抢到"+(this.bookCount)+"枚金币 \r\n马上分享给小伙伴，求超越吧";
 
-        if(type==1){
-            //正常结束
-            if(this.bookCount >=0 && this.bookCount<10){
-                this.gameOverTitle.text = "您的荣耀\r\n躲避天王\r\n找罗胖换100本书"
-                title = "躲避天王,找罗胖换100本书";
-            }else if(this.bookCount >10 && this.bookCount<20){
-                this.gameOverTitle.text = "您的荣耀\r\n马虎才子\r\n找罗胖换1本书"
-                title = "马虎才子,找罗胖换1本书";
-            }else if(this.bookCount >20 && this.bookCount<30){
-                this.gameOverTitle.text = "您的荣耀\r\n小才子\r\n找罗胖换2本书"
-                title = "小才子,找罗胖换2本书";
-            }else if(this.bookCount >30 && this.bookCount<40){
-                this.gameOverTitle.text = "您的荣耀\r\n大才子\r\n找罗胖换4本书"
-                title = "大才子,找罗胖换4本书";
-            }else if(this.bookCount>40){
-                this.gameOverTitle.text = "您的荣耀\r\n宇宙无敌大才子。\r\n找罗胖换10本书"
-                title = "宇宙无敌大才子,找罗胖换10本书";
-            }
-        }else{
-            //碰到肥皂结束
-            title =  "手欠大师,得送罗胖10本书";
+        this.overtitlemaske.width = this.gameOverTitle.width+40;
+        this.overtitlemaske.height = this.gameOverTitle.height+40;
+        this.overtitlemaske.graphics.beginFill( 0xffffff, 0.2);
+        this.overtitlemaske.graphics.drawRect( 0, 0, this.overtitlemaske.width, this.overtitlemaske.height );
+        this.overtitlemaske.graphics.endFill();
+        this.overtitlemaske.y = this.gameOverTitle.y-20;
+        this.overtitlemaske.x = (this.stageW-this.overtitlemaske.width)/2;
 
-            this.gameOverTitle.text = "你坚持了"+this.nowTime+"秒 \r\n为"+this.tnametext+"舰队抢到"+(this.bookCount)+"枚金币";
-        }
 
         try{
-            share(1,this.tid,(this.teaminfo.score*1)+(this.bookCount*1),this.tnametext,0);
+            share(1,this.tid,(this.bookCount*1),this.tnametext,0);
         }catch(e){}
 
 
@@ -1326,7 +1515,7 @@ class GameApp extends egret.DisplayObjectContainer{
                         console.log("Game Over");
                     }else{
                         this.gameLayer.removeChild(this.books[i]);
-                        this.bookCount++;
+                        this.bookCount+=10;
                         this.bookCountTextField.text = ""+this.bookCount;
                     }
                 };
@@ -1392,7 +1581,7 @@ class GameApp extends egret.DisplayObjectContainer{
     }
     /**
      * 切换描述内容
-     */
+    */
     private changeDescription(textContainer:egret.Sprite, lineArr:Array<any>):void {
         textContainer.removeChildren();
         var w:number = 0;
